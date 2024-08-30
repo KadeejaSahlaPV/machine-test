@@ -11,6 +11,9 @@
   <link rel="stylesheet" href="{{asset('fontawesome-free/css/all.css')}}">
   <!-- Theme style -->
   <link rel="stylesheet" href="{{asset('adminlte.css')}}">
+
+ <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.0/themes/base/jquery-ui.css">
+
 </head>
 <body class="hold-transition sidebar-mini">
 <div class="wrapper">
@@ -78,7 +81,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1>Simple Tables</h1>
+            <h1><button class="btn btn-primary" data-toggle="modal" data-target="#newModel">Add New</button></h1>
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -97,30 +100,35 @@
           <div class="col-md-12">
             <div class="card">
               <div class="card-header">
-                <h3 class="card-title">Bordered Table</h3>
+                <h3 class="card-title">Employees</h3>
               </div>
               <!-- /.card-header -->
               <div class="card-body">
                 <table class="table table-bordered">
                   <thead>
                     <tr>
-                      <th style="width: 10px">#</th>
-                      <th>Task</th>
-                      <th>Progress</th>
-                      <th style="width: 40px">Label</th>
+                      <th style="width: 10px">Id</th>
+                      <th>Name</th>
+                      <th>Mobile</th>
+                      <th>Email</th>
+                      <th>Department</th>
+                      <th>Label</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr>
-                      <td>1.</td>
-                      <td>Update software</td>
-                      <td>
-                        <div class="progress progress-xs">
-                          <div class="progress-bar progress-bar-danger" style="width: 55%"></div>
-                        </div>
-                      </td>
-                      <td><span class="badge bg-danger">55%</span></td>
-                    </tr>
+                   @foreach ($employees as $employee)
+                   <tr>
+                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $employee->name }}</td>
+                    <td>
+
+                    </td>
+                    <td>
+                        <a class="btn btn-danger" href="">Delete</a>
+                    </td>
+                  </tr>
+
+                   @endforeach
                   </tbody>
                 </table>
               </div>
@@ -142,11 +150,89 @@
 </section>
 
 
+<div class="modal" id="newModel" save-action={{route('save')}} token="{{ csrf_token()}}" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">New Employee</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form>
+                <div class="form-group">
+                  <label for="recipient-name" class="col-form-label">Name:</label>
+                  <input type="text" name="name" class="form-control" id="recipient-name">
+                </div>
+                <div class="form-group">
+                    <label for="recipient-name" class="col-form-label">Gender:</label>
+                   <select name="gender" class="form-control">
+                    <option value="1">Male</option>
+                    <option value="2">Female</option>
+                    <option value="3">Others</option>
+                   </select>
+                  </div>
 
-  <!-- Control Sidebar -->
-  <aside class="control-sidebar control-sidebar-dark">
-    <!-- Control sidebar content goes here -->
-  </aside>
+                <div class="form-group">
+                  <label for="message-text" class="col-form-label">Date of Birth:</label>
+                  <input type="text" class="form-control datepicker" name="dob"></input>
+                </div>
+
+                <div class="form-group">
+                    <label for="message-text" class="col-form-label">Address:</label>
+                    <textarea class="form-control" name="address" id="message-text"></textarea>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="recipient-name" class="col-form-label">Mobile:</label>
+                    <input type="integer" name="mobile" class="form-control" id="recipient-name">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="recipient-name" class="col-form-label">Email:</label>
+                    <input type="text" name="email" class="form-control" id="recipient-name">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="recipient-name" class="col-form-label">Departments:</label>
+                   <select name="department_id" class="form-control">
+                    <option value="">Select an Option</option>
+
+                    @foreach ($departments as $department)
+                    <option value="{{$department->id}}">{{$department->name}}</option>
+
+                    @endforeach
+                   </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="recipient-name" class="col-form-label">Designation:</label>
+                   <select name="gender" class="form-control">
+                   </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="message-text" class="col-form-label">Date of Joining:</label>
+                    <input type="text" class="form-control datepicker" name="doj">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="recipient-name" class="col-form-label">Image</label>
+                    <input type="file" name="image" class="form-control">
+                  </div>
+
+              </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary saveEmployee">Save changes</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
   <!-- /.control-sidebar -->
 </div>
 <!-- ./wrapper -->
@@ -157,6 +243,13 @@
 <script src="{{asset('bootstrap/js/bootstrap.bundle.js')}}"></script>
 <!-- AdminLTE App -->
 <script src="{{asset('adminlte.js')}}"></script>
+<script src="https://code.jquery.com/ui/1.14.0/jquery-ui.js"></script>
+
+
+<script src="{{asset('main.js')}}"></script>
+
+
+
 
 </body>
 </html>
