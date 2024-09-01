@@ -16,8 +16,9 @@
            $.ajax({
             type:'POST',
             url:$('#newModal').attr('save-action'),
+            headers: {
+                'X-CSRF-TOKEN': $('#newModal').attr('token')},
             data:{
-                '_token':$('#newModal').attr('token'),
                 'name':name,
                 'gender':gender,
                 'dob':dob,
@@ -31,11 +32,11 @@
             },
             success:function(response){
                 console.log(response);
-                
+
             }
            });
-           
-            
+
+
        })
 
 

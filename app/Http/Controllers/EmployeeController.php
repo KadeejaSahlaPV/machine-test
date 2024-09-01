@@ -12,12 +12,18 @@ class EmployeeController
     {
         $employees = Employee::all();
         $departments = Department::all();
-        $designations = Designation::all();
-        return view('list',compact('employees','departments','designations'));
+        return view('list',compact('employees','departments'));
     }
 
     public function save()
     {
         return request()->all();
+    }
+
+    public function fetchDesignation()
+    {
+        $designations = Designation::where('department_id',request('department_id'))->get();
+        return ['status'=>200,'data'=>$designations];
+
     }
 }
