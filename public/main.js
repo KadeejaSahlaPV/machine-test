@@ -1,7 +1,7 @@
  $( function() {
-       $( ".datepicker" ).datepicker();
+       $(".datepicker").datepicker();
 
-       $(  ".saveEmployee"  ).click(function(){
+       $(".saveEmployee").click(function(){
            var name = $('input[name=name]').val();
            var gender = $('select[name=gender]').val();
            var dob = $('input[name=dob]').val();
@@ -17,7 +17,8 @@
             type:'POST',
             url:$('#newModal').attr('save-action'),
             headers: {
-                'X-CSRF-TOKEN': $('#newModal').attr('token')},
+                'X-CSRF-TOKEN': $('#newModal').attr('token')
+            },
             data:{
                 'name':name,
                 'gender':gender,
@@ -32,12 +33,37 @@
             },
             success:function(response){
                 console.log(response);
-
+            },
+            error:function(error){
+                console.log(error);
             }
            });
+       });
 
 
-       })
+       $("select[name=department_id]").change(function(){
+        var departmentId = $(this).val();
+            if(departmentId != "")
+                {
+                    $.ajax({
+                        type:'POST',
+                        url:$('#newModal').attr('fetch-designation'),
+                        headers: {
+                            'X-CSRF-TOKEN': $('#newModal').attr('token')
+                        },
+                        data:{
+                            'department_id':departmentId,
+                        },
+                        success:function(response){
+                            console.log(response);
+                        },
+                        error:function(error){
+                            console.log(error);
+                        }
+                    });
+
+                }
+       });
 
 
     } );

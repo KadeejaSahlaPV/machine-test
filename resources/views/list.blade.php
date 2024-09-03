@@ -150,7 +150,11 @@
 </section>
 
 
-<div class="modal" id="newModel" save-action={{route('save')}} token="{{ csrf_token()}}" tabindex="-1" role="dialog">
+<div class="modal" id="newModel"
+    save-action="{{route('save')}}" 
+    fetch-designation="{{route('fetch.designation')}}"
+    token="{{ csrf_token()}}"
+    tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -160,7 +164,8 @@
           </button>
         </div>
         <div class="modal-body">
-            <form>
+            <form action="{{ route('save') }}" method="POST" enctype="multipart/form-data">
+                @csrf
                 <div class="form-group">
                   <label for="recipient-name" class="col-form-label">Name:</label>
                   <input type="text" name="name" class="form-control" id="recipient-name">
@@ -208,7 +213,7 @@
 
                   <div class="form-group">
                     <label for="recipient-name" class="col-form-label">Designation:</label>
-                   <select name="gender" class="form-control">
+                   <select name="designation_id" class="form-control">
                    </select>
                   </div>
 
