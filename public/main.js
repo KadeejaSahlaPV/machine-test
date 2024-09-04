@@ -15,11 +15,10 @@
 
            $.ajax({
             type:'POST',
-            url:$('#newModal').attr('save-action'),
-            headers: {
-                'X-CSRF-TOKEN': $('#newModal').attr('token')
-            },
+            url:'/save',
+            dataType:"json",
             data:{
+                "_token": "{{ csrf_token() }}",
                 'name':name,
                 'gender':gender,
                 'dob':dob,
@@ -39,7 +38,6 @@
             }
            });
        });
-
 
        $("select[name=department_id]").change(function(){
         var departmentId = $(this).val();
@@ -64,6 +62,8 @@
 
                 }
        });
+
+
 
 
     } );

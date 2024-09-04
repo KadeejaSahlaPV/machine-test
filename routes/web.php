@@ -7,4 +7,4 @@ Route::get('/',[EmployeeController::class,'list']);
 
 Route::post('save',[EmployeeController::class,'save'])->name('save');
 
-Route::post('fetch_designation',[EmployeeController::class,'fetchDesignation'])->name('fetch.designation');
+Route::post('fetch_designation',[EmployeeController::class,'fetchDesignation'])->name('fetch_designation');

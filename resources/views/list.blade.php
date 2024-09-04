@@ -151,8 +151,8 @@
 
 
 <div class="modal" id="newModel"
-    save-action="{{route('save')}}" 
-    fetch-designation="{{route('fetch.designation')}}"
+    save-action="{{route('save')}}"
+    fetch-designation="{{route('fetch_designation')}}"
     token="{{ csrf_token()}}"
     tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
@@ -164,8 +164,7 @@
           </button>
         </div>
         <div class="modal-body">
-            <form action="{{ route('save') }}" method="POST" enctype="multipart/form-data">
-                @csrf
+            <form>
                 <div class="form-group">
                   <label for="recipient-name" class="col-form-label">Name:</label>
                   <input type="text" name="name" class="form-control" id="recipient-name">
@@ -191,12 +190,12 @@
 
                   <div class="form-group">
                     <label for="recipient-name" class="col-form-label">Mobile:</label>
-                    <input type="integer" name="mobile" class="form-control" id="recipient-name">
+                    <input type="integer" name="mobile" class="form-control">
                   </div>
 
                   <div class="form-group">
                     <label for="recipient-name" class="col-form-label">Email:</label>
-                    <input type="text" name="email" class="form-control" id="recipient-name">
+                    <input type="email" name="email" class="form-control">
                   </div>
 
                   <div class="form-group">
@@ -251,7 +250,84 @@
 <script src="https://code.jquery.com/ui/1.14.0/jquery-ui.js"></script>
 
 
-<script src="{{asset('main.js')}}"></script>
+<script>
+ $( function() {
+       $(".datepicker").datepicker();
+
+       $(".saveEmployee").click(function(){
+           var name = $('input[name=name]').val();
+           var gender = $('select[name=gender]').val();
+           var dob = $('input[name=dob]').val();
+           var address = $('textarea[name=address]').val();
+           var mobile = $('input[name=mobile]').val();
+           var email = $('input[name=email]').val();
+           var departmentId = $('select[name=department_id]').val();
+           var designationId = $('select[name=designation_id]').val();
+           var doj = $('input[name=doj]').val();
+           var image = $('input[name=image]').val();
+
+           $.ajax({
+            type:'POST',
+            url:'/save',
+            dataType:"json",
+            data:{
+                "_token": "{{ csrf_token() }}",
+                'name':name,
+                'gender':gender,
+                'dob':dob,
+                'address':address,
+                'mobile':mobile,
+                'email':email,
+                'department_id':departmentId,
+                'designation_id':designationId,
+                'doj':doj,
+                'image':image,
+            },
+            success:function(response){
+                if (response.status ==200) {
+                    $('#newModel').modal('hide');
+                }
+            },
+            error:function(error){
+                console.log(error);
+            }
+           });
+       });
+
+       $("select[name=department_id]").change(function(){
+        var departmentId = $(this).val();
+            if(departmentId != "")
+                {
+                    $.ajax({
+                        type:'POST',
+                        url:'/fetch_designation',
+                        dataType:"json",
+                        data:{
+                            "_token": "{{ csrf_token() }}",
+                            'department_id':departmentId,
+                        },
+                        success:function(response){
+                           var optionHTML=``;
+                           for (let i = 0; i < response.data.length; i++) {
+                            const element = response.data[i];
+                            optionHTML+=`<option value='`+element.id+`'>`+element.name+`</option>`;
+                           }
+                        $("select[name=designation_id]").html(optionHTML);
+
+                        },
+
+                        error:function(error){
+                            console.log(error);
+                        }
+                    });
+
+                }
+       });
+
+
+    } );
+
+</script>
 
 
 
