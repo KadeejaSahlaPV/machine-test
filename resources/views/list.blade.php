@@ -123,7 +123,7 @@
                     <td>{{ $employee->email }}</td>
                     <td>{{ $employee->designation->name }} ({{ $employee->designation->department->name }})</td>
                     <td>
-                        <a class="btn btn-danger deleteRow" each-id="{{encrypt($employee->id)}}">Delete</a>
+                        <button class="btn btn-danger deleteRow" each-id="{{encrypt($employee->id)}}">Delete</button>
                     </td>
                   </tr>
 
@@ -284,6 +284,7 @@
             },
             success:function(response){
                 if (response.status ==200) {
+                    renderTable(response.data);
                     $('#newModel').modal('hide');
                 }
             },
@@ -305,17 +306,31 @@
                             'id': id,
                         },
                         success:function(response){
-                            var tableRow= ``;
-                            for (let i = 0; i < response.data.length; i++) {
-                                const element = response.data[i];
-                                render
-                            }
-                        },
-                        error:function(error){
-                            console.log(error);
+                            renderTable(response.data);
                         }
                     });
        });
+
+
+                function renderTable(rows){
+                    var tableRows= ``;
+                            for (let i = 0; i < rows.length; i++) {
+                                var element = rows[i];
+                               tableRows+=` <tr>
+                                <td></td>
+                                <td>`+element.name+`</td>
+                                <td>`+element.mobile+`</td>
+                                <td>`+element.email+`</td>
+                                <td>`+element.designation.name+` (`+element.designation.department.name+`)</td>
+                                <td>
+                                    <button class="btn btn-danger deleteRow" each-id="`+element.id+`">
+                                        Delete</button>
+                                </td>
+                                </tr>`;
+                            }
+                            $('.render').html(tableRows);
+                 }
+
 
 
        $("select[name=department_id]").change(function(){

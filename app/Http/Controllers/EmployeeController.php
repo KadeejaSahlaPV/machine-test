@@ -31,23 +31,16 @@ class EmployeeController
             'doj' => date('Y-m-d',strtotime(request('doj'))),
             'image' => request('image'),
         ]);
-        return ['status'=>200,'message'=>'Employee Created Successfully'];
+        $employees = Employee::with('designation','designation.department')->get();
+        return ['status'=>200,'message'=>'Employee Created Successfully','data'=>$employees];
     }
 
 
     public function delete(Request $request)
     {
-        try {
-            $id = decrypt($request->id);
-
-            $employee = Employee::findOrFail($id);
-            $employee->delete();
-
-            return response()->json(['status' => 'success', 'message' => 'Employee deleted successfully']);
-        }
-        catch (\Exception $e) {
-            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
-        }
+        Employee::find(decrypt(request('id')))->delete();
+        $employees = Employee::with('designation','designation.department')->get();
+        return ['status'=>200,'message'=>'Employee Deleted Successfully','data'=>$employees];
 
     }
 
