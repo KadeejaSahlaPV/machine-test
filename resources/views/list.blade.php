@@ -111,20 +111,19 @@
                       <th>Name</th>
                       <th>Mobile</th>
                       <th>Email</th>
-                      <th>Department</th>
-                      <th>Label</th>
+                      <th>Designation</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody class="render">
                    @foreach ($employees as $employee)
                    <tr>
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $employee->name }}</td>
+                    <td>{{ $employee->mobile }}</td>
+                    <td>{{ $employee->email }}</td>
+                    <td>{{ $employee->designation->name }} ({{ $employee->designation->department->name }})</td>
                     <td>
-
-                    </td>
-                    <td>
-                        <a class="btn btn-danger" href="">Delete</a>
+                        <a class="btn btn-danger deleteRow" each-id="{{encrypt($employee->id)}}">Delete</a>
                     </td>
                   </tr>
 
@@ -294,6 +293,31 @@
            });
        });
 
+
+       $(".deleteRow").click(function(){
+        var id = $(this).attr('each-id');
+             $.ajax({
+                        type:'POST',
+                        url:'/delete',
+                        dataType:"json",
+                        data:{
+                          "_token": "{{ csrf_token() }}",
+                            'id': id,
+                        },
+                        success:function(response){
+                            var tableRow= ``;
+                            for (let i = 0; i < response.data.length; i++) {
+                                const element = response.data[i];
+                                render
+                            }
+                        },
+                        error:function(error){
+                            console.log(error);
+                        }
+                    });
+       });
+
+
        $("select[name=department_id]").change(function(){
         var departmentId = $(this).val();
             if(departmentId != "")
@@ -323,6 +347,7 @@
 
                 }
        });
+
 
 
     } );

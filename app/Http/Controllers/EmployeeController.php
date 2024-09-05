@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Department;
 use App\Models\Designation;
 use App\Models\Employee;
+use Illuminate\Http\Request;
+
 
 class EmployeeController
 {
@@ -32,6 +34,22 @@ class EmployeeController
         return ['status'=>200,'message'=>'Employee Created Successfully'];
     }
 
+
+    public function delete(Request $request)
+    {
+        try {
+            $id = decrypt($request->id);
+
+            $employee = Employee::findOrFail($id);
+            $employee->delete();
+
+            return response()->json(['status' => 'success', 'message' => 'Employee deleted successfully']);
+        }
+        catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+
+    }
 
     public function fetchDesignation()
     {
