@@ -123,6 +123,8 @@
                     <td>{{ $employee->email }}</td>
                     <td>{{ $employee->designation->name }} ({{ $employee->designation->department->name }})</td>
                     <td>
+                        <button class="btn btn-primary editRow" data-toggle="modal" data-target="#newModel" each-id="{{encrypt($employee->id)}}">Edit</button>
+                    <td>
                         <button class="btn btn-danger deleteRow" each-id="{{encrypt($employee->id)}}">Delete</button>
                     </td>
                   </tr>
@@ -295,6 +297,92 @@
        });
 
 
+       $(".editRow").click(function(){
+    var id = $(this).attr('each-id');
+    console.log("ID being sent: ", id);
+
+    $.ajax({
+        type: 'GET',
+        url: '/edit',
+        dataType: "json",
+        data: {
+            "_token": "{{ csrf_token() }}",
+            'id': id,
+        },
+        success: function(response) {
+            if(response.status == 'success') {
+                // Populate input fields with the response data
+                $('#recipient-name').val(response.data.name); // Assuming 'name' field
+                $('select[name=gender]').val(response.data.gender); // Gender dropdown
+                $('input[name=dob]').val(response.data.dob); // Date of birth
+                $('textarea[name=address]').val(response.data.address); // Address
+                $('input[name=mobile]').val(response.data.mobile); // Mobile
+                $('input[name=email]').val(response.data.email); // Email
+                $('select[name=department_id]').val(response.data.department_id); // Department dropdown
+                $('select[name=designation_id]').val(response.data.designation_id); // Designation dropdown
+                $('input[name=doj]').val(response.data.doj); // Date of joining
+
+                $('#newModel').modal('show');
+            } else {
+                alert(response.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.log(xhr.responseText);
+        }
+    });
+});
+
+
+$(".saveEmployee").click(function(){
+    var employeeId = $('#employee-id').val();
+    var name = $('input[name=name]').val();
+    var gender = $('select[name=gender]').val();
+    var dob = $('input[name=dob]').val();
+    var address = $('textarea[name=address]').val();
+    var mobile = $('input[name=mobile]').val();
+    var email = $('input[name=email]').val();
+    var departmentId = $('select[name=department_id]').val();
+    var designationId = $('select[name=designation_id]').val();
+    var doj = $('input[name=doj]').val();
+    var image = $('input[name=image]').val();
+
+    var url = employeeId ? '/update' : '/save';
+    var method = employeeId ? 'POST' : 'POST';
+
+    $.ajax({
+        type: method,
+        url: url,
+        dataType: "json",
+        data: {
+            "_token": "{{ csrf_token() }}",
+            'id': employeeId,
+            'name': name,
+            'gender': gender,
+            'dob': dob,
+            'address': address,
+            'mobile': mobile,
+            'email': email,
+            'department_id': departmentId,
+            'designation_id': designationId,
+            'doj': doj,
+            'image': image,
+        },
+        success: function(response){
+            if (response.status == 200) {
+                renderTable(response.data);
+                $('#newModel').modal('hide');
+                $('#employee-id').val('');
+            }
+        },
+        error:function(error){
+            console.log(error);
+        }
+    });
+});
+
+
+
        $(".deleteRow").click(function(){
         var id = $(this).attr('each-id');
              $.ajax({
@@ -317,11 +405,15 @@
                             for (let i = 0; i < rows.length; i++) {
                                 var element = rows[i];
                                tableRows+=` <tr>
-                                <td></td>
+                                <td>` + (i + 1) + `</td>
                                 <td>`+element.name+`</td>
                                 <td>`+element.mobile+`</td>
                                 <td>`+element.email+`</td>
                                 <td>`+element.designation.name+` (`+element.designation.department.name+`)</td>
+                                <td>
+                                    <button class="btn btn-primary editRow" each-id="`+element.id+`">
+                                        Edit</button>
+                                </td>
                                 <td>
                                     <button class="btn btn-danger deleteRow" each-id="`+element.id+`">
                                         Delete</button>
